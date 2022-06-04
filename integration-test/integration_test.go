@@ -3,6 +3,7 @@ package integration_test
 import (
 	"log"
 	"net/http"
+	"order-app/pkg/test"
 	"os"
 	"testing"
 	"time"
@@ -22,6 +23,9 @@ const (
 )
 
 func TestMain(m *testing.M) {
+	ts := test.NewTestSuite()
+	defer ts.TearDown()
+
 	err := healthCheck(attempts)
 	if err != nil {
 		log.Fatalf("Integration tests: host %s is not available: %s", host, err)
