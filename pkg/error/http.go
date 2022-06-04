@@ -13,7 +13,6 @@ func SendError(code int, err error, g *gin.Context) string {
 		Message:   err.Error(),
 		Status:    getStatusDesc(code),
 		Timestamp: time.Now().Format(time.RFC3339),
-		Data:      model.Empty{},
 	}
 	g.JSON(http.StatusInternalServerError, r)
 
@@ -25,7 +24,6 @@ func AbortOnError(code int, err error, g *gin.Context) string {
 		Message:   err.Error(),
 		Status:    getStatusDesc(code),
 		Timestamp: time.Now().Format(time.RFC3339),
-		Data:      model.Empty{},
 	}
 	g.AbortWithStatusJSON(code, r)
 
