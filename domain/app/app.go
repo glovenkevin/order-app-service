@@ -37,7 +37,9 @@ func runCommand(cfg *config.Config) func(c *cli.Context) error {
 		mode := c.String("mode")
 		switch mode {
 		case "migration":
-			return runMigrate(cfg)
+			return runMigrate(cfg, "up")
+		case "migration-down":
+			return runMigrate(cfg, "down")
 		case "app":
 			return runApp(cfg)
 		default:
@@ -73,7 +75,7 @@ func runApp(cfg *config.Config) error {
 	return nil
 }
 
-func runMigrate(cfg *config.Config) error {
+func runMigrate(cfg *config.Config, flag string) error {
 	l, err := initLogger(&cfg.Log)
 	if err != nil {
 		log.Fatal(err)
@@ -89,5 +91,10 @@ func runMigrate(cfg *config.Config) error {
 
 	// Migrate
 	ctx := context.Background()
-	return execMigration(ctx, db, l)
+	if flag == "up" {
+		err = execMigration(ctx, db, l)
+	} else {
+		err = execMigrationDown(ctx, db, l)
+	}
+	return err
 }

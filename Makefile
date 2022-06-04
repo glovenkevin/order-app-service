@@ -45,5 +45,8 @@ swag-v1: ### swag init
 migration:
 	go run ./cmd/app --mode migration
 
+migration-down:
+	go run ./cmd/app --mode migration-down
+
 run: swag-v1
 	go run ./cmd/app
