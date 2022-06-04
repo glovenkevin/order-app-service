@@ -5,6 +5,6 @@ import (
 	"order-app/domain/entity"
 )
 
-type RoleRepo interface {
+type RoleRepoInterface interface {
 	GetRoleByCode(ctx context.Context, code string) (*entity.Role, error)
 }

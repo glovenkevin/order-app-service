@@ -13,11 +13,11 @@ import (
 
 type AuthUseCase struct {
 	Log      logger.ILogger
-	UserRepo domain.UserRepo
-	RoleRepo domain.RoleRepo
+	UserRepo domain.UserRepoInterface
+	RoleRepo domain.RoleRepoInterface
 }
 
-func NewAuthUseCase(log logger.ILogger, userRepo domain.UserRepo, roleRepo domain.RoleRepo) *AuthUseCase {
+func NewAuthUseCase(log logger.ILogger, userRepo domain.UserRepoInterface, roleRepo domain.RoleRepoInterface) *AuthUseCase {
 	return &AuthUseCase{Log: log, UserRepo: userRepo, RoleRepo: roleRepo}
 }
 
@@ -43,7 +43,13 @@ func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
-	return u.UserRepo.RegisterUser(user)
+	err = u.UserRepo.RegisterUser(user)
+	if err != nil {
+		u.Log.Errorf(tracestr+" - u.UserRepo.RegisterUser: %w", err)
+		return err
+	}
+
+	return nil
 }
 
 // func (u *AuthUseCase) Login(user *) error {

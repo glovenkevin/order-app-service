@@ -2,6 +2,6 @@ package domain
 
 import "order-app/domain/entity"
 
-type UserRepo interface {
+type UserRepoInterface interface {
 	RegisterUser(user *entity.User) error
 }
