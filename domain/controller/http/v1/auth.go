@@ -5,18 +5,20 @@ import (
 	"order-app/domain/model"
 	"order-app/domain/usecase"
 	"order-app/domain/usecase/repo"
+	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg/v10"
 )
 
 type AuthRoutes struct {
-	log logger.ILogger
+	log logger.LoggerInterface
 	uc  usecase.Auther
 }
 
-func newAuthRoutes(handler *gin.RouterGroup, log logger.ILogger, db *pg.DB) {
+func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *pg.DB) {
 	userRepo := repo.NewUserRepo(log, db)
 	roleRepo := repo.NewRoleRepo(log, db)
 
@@ -37,22 +39,28 @@ func newAuthRoutes(handler *gin.RouterGroup, log logger.ILogger, db *pg.DB) {
 // @Accept      json
 // @Produce     json
 // @Param		req body model.LoginRequest true "Login request"
-// @Success     200 {object} model.LoginResponse
-// @Failure		400 {object} v1.ErrorResponse
-// @Failure     500 {object} v1.ErrorResponse
+// @Success     200 {object} model.Response
+// @Failure		400 {object} model.Response
+// @Failure     500 {object} model.Response
 // @Router      /api/v1/auth/login [get]
 func (r *AuthRoutes) login(c *gin.Context) {
 	var req model.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		r.log.Error(err)
-		errorResponse(c, http.StatusBadRequest, "bad request")
-
+		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))
 		return
 	}
 
-	resp := &model.LoginResponse{
-		Token:   "",
-		Message: "Test masuk",
+	ctx := c.Request.Context()
+	res, err := r.uc.Login(ctx, &req)
+	if err != nil {
+		r.log.Error(error_helper.AbortAuthenticated(c))
+		return
+	}
+
+	resp := &model.Response{
+		Message:   "success login",
+		Timestamp: time.Now().Format(time.RFC3339),
+		Data:      res,
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -63,16 +71,16 @@ func (r *AuthRoutes) login(c *gin.Context) {
 // @Accept      json
 // @Produce     json
 // @Param		req body model.RegisterRequest true "Register request"
-// @Success     200 {object} model.SuccessResponse
-// @Failure		400 {object} v1.ErrorResponse
-// @Failure     500 {object} v1.ErrorResponse
+// @Success     200 {object} model.Response
+// @Failure		400 {object} model.Response
+// @Failure     500 {object} model.Response
 // @Router      /api/v1/auth/register [get]
 func (r *AuthRoutes) register(c *gin.Context) {
 	select {
 	case <-c.Done():
 		if c.Err() != nil {
 			r.log.Errorf("c.Done(): %v", c.Err())
-			errorResponse(c, http.StatusInternalServerError, "internal server error")
+			error_helper.AbortOnError(http.StatusInternalServerError, c.Err(), c)
 		}
 		return
 	default:
@@ -80,20 +88,20 @@ func (r *AuthRoutes) register(c *gin.Context) {
 
 	var req model.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		r.log.Error(err)
-		errorResponse(c, http.StatusBadRequest, "bad request")
+		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))
 		return
 	}
 
 	ctx := c.Request.Context()
 	err := r.uc.Register(ctx, req.ToEntity())
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, "internal server error")
+		r.log.Error(error_helper.AbortOnError(http.StatusInternalServerError, err, c))
 		return
 	}
 
-	resp := &model.SuccessResponse{
-		Message: "Berhasil Daftar",
+	resp := &model.Response{
+		Message:   "success register",
+		Timestamp: time.Now().Format(time.RFC3339),
 	}
 	c.JSON(http.StatusOK, resp)
 }

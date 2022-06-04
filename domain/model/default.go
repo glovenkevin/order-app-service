@@ -1,7 +1,12 @@
 package model
 
 type (
-	SuccessResponse struct {
-		Message string `json:"message" example:"Success"`
+	Response struct {
+		Message   string      `json:"message"`
+		Status    string      `json:"status"`
+		Timestamp string      `json:"timestamp"`
+		Data      interface{} `json:"data,omitempty"`
 	}
+
+	Empty struct{}
 )
