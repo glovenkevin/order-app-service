@@ -20,7 +20,7 @@ const (
 	_defaultTimeout  = time.Second
 )
 
-func execMigration(ctx context.Context, db *sql.DB, log logger.ILogger) error {
+func execMigration(ctx context.Context, db *sql.DB, log logger.LoggerInterface) error {
 	var (
 		attempts = _defaultAttempts
 		err      error

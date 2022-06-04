@@ -10,10 +10,10 @@ import (
 
 type RoleRepo struct {
 	*pg.DB
-	Log logger.ILogger
+	Log logger.LoggerInterface
 }
 
-func NewRoleRepo(log logger.ILogger, db *pg.DB) *RoleRepo {
+func NewRoleRepo(log logger.LoggerInterface, db *pg.DB) *RoleRepo {
 	return &RoleRepo{DB: db, Log: log}
 }
 

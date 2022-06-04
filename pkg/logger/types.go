@@ -1,6 +1,6 @@
 package logger
 
-type ILogger interface {
+type LoggerInterface interface {
 	Debug(msg interface{})
 	Debugf(template string, args ...interface{})
 	Info(msg interface{})

@@ -9,7 +9,7 @@ import (
 	"github.com/go-pg/pg/v10"
 )
 
-func New(host, port, user, password, database string, pool int, log logger.ILogger) (*sql.DB, error) {
+func New(host, port, user, password, database string, pool int, log logger.LoggerInterface) (*sql.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host,

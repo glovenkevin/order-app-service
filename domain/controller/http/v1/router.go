@@ -23,7 +23,7 @@ import (
 // @contact.email  	glovenkevincch@gmail.com
 // @host        	localhost:8080
 // @BasePath    	/api/v1
-func NewRouter(handler *gin.Engine, l logger.ILogger, db *pg.DB) {
+func NewRouter(handler *gin.Engine, l logger.LoggerInterface, db *pg.DB) {
 	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
 	handler.GET("/swagger/*any", swaggerHandler)
 
