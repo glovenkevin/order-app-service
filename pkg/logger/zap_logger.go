@@ -14,8 +14,23 @@ func NewZapLogger(cfg *config.Log) (*ZapLogger, error) {
 	lc := zap.NewDevelopmentConfig()
 	lc.Encoding = "console"
 
-	if cfg.Level == "prod" {
+	if cfg.Env == "prod" {
 		lc = zap.NewProductionConfig()
+		lc.Encoding = "json"
+		lc.DisableStacktrace = true
+	}
+
+	if cfg.Level != "" {
+		switch cfg.Level {
+		case "debug":
+			lc.Level.SetLevel(zap.DebugLevel)
+		case "info":
+			lc.Level.SetLevel(zap.InfoLevel)
+		case "warn":
+			lc.Level.SetLevel(zap.WarnLevel)
+		default:
+			lc.Level.SetLevel(zap.ErrorLevel)
+		}
 	}
 
 	l, err := lc.Build()
