@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
   id uuid NOT NULL,
   role_id uuid NOT NULL,
   name character varying NOT NULL,
-  email character varying NOT NULL,
+  email character varying NOT NULL unique,
   password character varying NOT NULL,
   phone_number character varying,
   fcm_token character varying,
