@@ -40,6 +40,26 @@ func TestHTTPIncompleteParamRegister(t *testing.T) {
 		Send().Headers("Content-Type").Add("application/json"),
 		Send().Body().String(body),
 		Expect().Status().Equal(http.StatusBadRequest),
-		Expect().Body().JSON().JQ(".error").Equal("bad request"),
+		Expect().Body().JSON().JQ(".message").Contains("Error:Field validation"),
+	)
+}
+
+func TestHTTPDuplicateEmail(t *testing.T) {
+	body := `{
+		"name": "test",
+		"email": "test@test.com",
+		"password": "asdf",
+		"phone_number": "08123456789",
+		"is_blocked": false,
+		"fcm_token": "asdf123"
+	}`
+
+	Test(t,
+		Description("DoNormalRegister with duplicate email"),
+		Post(basePathApi+"/auth/register"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().String(body),
+		Expect().Status().Equal(http.StatusBadRequest),
+		Expect().Body().JSON().JQ(".message").Contains("Email already exists"),
 	)
 }

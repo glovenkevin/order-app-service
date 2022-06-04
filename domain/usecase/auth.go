@@ -5,6 +5,7 @@ import (
 	"order-app/domain"
 	"order-app/domain/entity"
 	"order-app/domain/model"
+	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
 	"time"
 
@@ -20,6 +21,22 @@ type AuthUseCase struct {
 
 func NewAuthUseCase(log logger.LoggerInterface, userRepo domain.UserRepoInterface, roleRepo domain.RoleRepoInterface) *AuthUseCase {
 	return &AuthUseCase{Log: log, UserRepo: userRepo, RoleRepo: roleRepo}
+}
+
+func (u *AuthUseCase) ValidateNewUser(ctx context.Context, req *model.RegisterRequest) error {
+	tracestr := "usecase.AuthUseCase.ValidateNewUser"
+
+	user, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		u.Log.Errorf(tracestr+" - u.UserRepo.GetUserByEmail: %w", err)
+		return err
+	}
+
+	if user.ID.String() != "" {
+		return error_helper.ErrEmailAlreadyExists
+	}
+
+	return nil
 }
 
 func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
@@ -50,7 +67,7 @@ func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
-	err = u.UserRepo.RegisterUser(tx, user)
+	err = u.UserRepo.InsertUser(tx, user)
 	if err != nil {
 		tx.Rollback()
 		u.Log.Errorf(tracestr+" - u.UserRepo.RegisterUser: %w", err)

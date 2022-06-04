@@ -11,6 +11,7 @@ import (
 type (
 	// Auth -.
 	Auther interface {
+		ValidateNewUser(ctx context.Context, req *model.RegisterRequest) error
 		Register(ctx context.Context, user *entity.User) error
 		Login(ctx context.Context, req *model.LoginRequest) (*model.LoginResponse, error)
 	}

@@ -93,7 +93,13 @@ func (r *AuthRoutes) register(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
-	err := r.uc.Register(ctx, req.ToEntity())
+	err := r.uc.ValidateNewUser(ctx, &req)
+	if err != nil {
+		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))
+		return
+	}
+
+	err = r.uc.Register(ctx, req.ToEntity())
 	if err != nil {
 		r.log.Error(error_helper.AbortOnError(http.StatusInternalServerError, err, c))
 		return

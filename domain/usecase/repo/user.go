@@ -21,7 +21,7 @@ func (u *UserRepo) Begin(ctx context.Context) (*pg.Tx, error) {
 	return u.DB.BeginContext(ctx)
 }
 
-func (r *UserRepo) RegisterUser(tx *pg.Tx, user *entity.User) error {
+func (r *UserRepo) InsertUser(tx *pg.Tx, user *entity.User) error {
 	_, err := tx.Model(user).Insert()
 	return err
 }
