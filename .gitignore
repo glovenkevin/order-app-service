@@ -5,6 +5,7 @@
 # Config
 .env
 config.yml
+config.test.yml
 go.sum
 go.mod
 docs

@@ -1,0 +1,19 @@
+app:
+  name: 'order-app'
+  version: '1.0.0'
+  gin-mode: 'release'
+
+http:
+  port: '8080'
+
+logger:
+  log_level: 'debug'
+  log_env: 'test'
+
+postgres:
+  pool_max: 2
+  host: localhost
+  port: 5432
+  user: developer
+  password: developer
+  db_name: order_app
