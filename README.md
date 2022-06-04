@@ -42,4 +42,4 @@ Comming soon...
 
 ## Related projects
 
-- [Order App Client Flutter](git@github.com:glovenkevin/order-app-client.git)
+- [Order App Client Flutter](https://github.com/glovenkevin/order-app-client)
