@@ -13,7 +13,7 @@ import (
 
 type AuthRoutes struct {
 	log logger.ILogger
-	uc  *usecase.AuthUseCase
+	uc  usecase.Auther
 }
 
 func newAuthRoutes(handler *gin.RouterGroup, log logger.ILogger, db *pg.DB) {

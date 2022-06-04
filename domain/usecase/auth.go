@@ -22,18 +22,18 @@ func NewAuthUseCase(log logger.ILogger, userRepo domain.UserRepo, roleRepo domai
 }
 
 func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
-	tracert := "usecase.AuthUseCase.Register"
+	tracestr := "usecase.AuthUseCase.Register"
 
 	pwb := []byte(user.Password)
 	hpw, err := bcrypt.GenerateFromPassword(pwb, bcrypt.DefaultCost)
 	if err != nil {
-		u.Log.Errorf(tracert+" - bcrypt.GenerateFromPassword: %w", err)
+		u.Log.Errorf(tracestr+" - bcrypt.GenerateFromPassword: %w", err)
 		return err
 	}
 
 	role, err := u.RoleRepo.GetRoleByCode(ctx, "USR")
 	if err != nil {
-		u.Log.Errorf(tracert+" - u.RoleRepo.GetRoleByCode: %w", err)
+		u.Log.Errorf(tracestr+" - u.RoleRepo.GetRoleByCode: %w", err)
 		return err
 	}
 
