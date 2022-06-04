@@ -14,10 +14,15 @@ func NewZapLogger(cfg *config.Log) (*ZapLogger, error) {
 	lc := zap.NewDevelopmentConfig()
 	lc.Encoding = "console"
 
-	if cfg.Env == "prod" {
+	if cfg.Env == "test" {
 		lc = zap.NewProductionConfig()
 		lc.Encoding = "json"
 		lc.DisableStacktrace = true
+	}
+
+	if cfg.Env == "prod" {
+		lc = zap.NewProductionConfig()
+		lc.Encoding = "json"
 	}
 
 	if cfg.Level != "" {
