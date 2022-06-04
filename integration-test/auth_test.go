@@ -63,3 +63,48 @@ func TestHTTPDuplicateEmail(t *testing.T) {
 		Expect().Body().JSON().JQ(".message").Contains("Email already exists"),
 	)
 }
+
+func TestHTTPNormalLogin(t *testing.T) {
+	body := `{
+		"email": "test@test.com",
+		"password": "asdf"
+	}`
+
+	Test(t,
+		Description("DoNormalLogin"),
+		Post(basePathApi+"/auth/login"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().String(body),
+		Expect().Status().Equal(http.StatusOK),
+	)
+}
+
+func TestHTTPIncompleteParamLogin(t *testing.T) {
+	body := `{
+		"password": "asdf"
+	}`
+
+	Test(t,
+		Description("DoNormalLogin"),
+		Post(basePathApi+"/auth/login"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().String(body),
+		Expect().Status().Equal(http.StatusBadRequest),
+		Expect().Body().JSON().JQ(".message").Contains("Error:Field validation"),
+	)
+}
+
+func TestHTTPPasswordIncorrectLogin(t *testing.T) {
+	body := `{
+		"email": "test@test.com",
+		"password": "asdfg"
+	}`
+
+	Test(t,
+		Description("DoNormalLogin"),
+		Post(basePathApi+"/auth/login"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().String(body),
+		Expect().Status().Equal(http.StatusUnauthorized),
+	)
+}
