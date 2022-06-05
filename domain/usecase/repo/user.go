@@ -29,5 +29,8 @@ func (r *UserRepo) InsertUser(tx *pg.Tx, user *entity.User) error {
 func (r *UserRepo) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
 	var user entity.User
 	err := r.ModelContext(ctx, &user).Where("email = ?", email).Select()
+	if pg.ErrNoRows == err {
+		err = nil
+	}
 	return &user, err
 }

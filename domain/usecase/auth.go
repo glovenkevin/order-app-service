@@ -93,11 +93,15 @@ func (u *AuthUseCase) Login(ctx context.Context, req *model.LoginRequest) (*mode
 		return nil, err
 	}
 
+	if user.Email == "" {
+		return nil, error_helper.ErrUserNotFound
+	}
+
 	pwb := []byte(req.Password)
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), pwb)
 	if err != nil {
 		u.Log.Errorf(tracestr+" - bcrypt.CompareHashAndPassword: %w", err)
-		return nil, err
+		return nil, error_helper.ErrPasswordIncorrect
 	}
 
 	return &model.LoginResponse{
