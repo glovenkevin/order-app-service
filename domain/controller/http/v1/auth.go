@@ -42,7 +42,7 @@ func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *pg.
 // @Success     200 {object} model.Response
 // @Failure		400 {object} model.Response
 // @Failure     500 {object} model.Response
-// @Router      /api/v1/auth/login [get]
+// @Router      /api/v1/auth/login [post]
 func (r *AuthRoutes) login(c *gin.Context) {
 	var req model.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -53,7 +53,7 @@ func (r *AuthRoutes) login(c *gin.Context) {
 	ctx := c.Request.Context()
 	res, err := r.uc.Login(ctx, &req)
 	if err != nil {
-		r.log.Error(error_helper.AbortAuthenticated(c))
+		r.log.Error(error_helper.AbortOnError(http.StatusUnauthorized, err, c))
 		return
 	}
 
@@ -74,7 +74,7 @@ func (r *AuthRoutes) login(c *gin.Context) {
 // @Success     200 {object} model.Response
 // @Failure		400 {object} model.Response
 // @Failure     500 {object} model.Response
-// @Router      /api/v1/auth/register [get]
+// @Router      /api/v1/auth/register [post]
 func (r *AuthRoutes) register(c *gin.Context) {
 	select {
 	case <-c.Done():
