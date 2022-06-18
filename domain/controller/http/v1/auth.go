@@ -40,9 +40,8 @@ func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *pg.
 // @Produce     json
 // @Param		req body model.LoginRequest true "Login request"
 // @Success     200 {object} model.Response
-// @Failure		400 {object} model.Response
 // @Failure     500 {object} model.Response
-// @Router      /api/v1/auth/login [post]
+// @Router      /v1/auth/login [post]
 func (r *AuthRoutes) login(c *gin.Context) {
 	var req model.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -59,6 +58,7 @@ func (r *AuthRoutes) login(c *gin.Context) {
 
 	resp := &model.Response{
 		Message:   "success login",
+		Status:    http.StatusText(http.StatusOK),
 		Timestamp: time.Now().Format(time.RFC3339),
 		Data:      res,
 	}
@@ -72,9 +72,8 @@ func (r *AuthRoutes) login(c *gin.Context) {
 // @Produce     json
 // @Param		req body model.RegisterRequest true "Register request"
 // @Success     200 {object} model.Response
-// @Failure		400 {object} model.Response
 // @Failure     500 {object} model.Response
-// @Router      /api/v1/auth/register [post]
+// @Router      /v1/auth/register [post]
 func (r *AuthRoutes) register(c *gin.Context) {
 	select {
 	case <-c.Done():
@@ -88,26 +87,21 @@ func (r *AuthRoutes) register(c *gin.Context) {
 
 	var req model.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))
+		r.log.Error(error_helper.SendError(http.StatusBadRequest, err, c))
 		return
 	}
 
 	ctx := c.Request.Context()
-	err := r.uc.ValidateNewUser(ctx, &req)
+	err := r.uc.Register(ctx, req.ToEntity())
 	if err != nil {
-		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))
-		return
-	}
-
-	err = r.uc.Register(ctx, req.ToEntity())
-	if err != nil {
-		r.log.Error(error_helper.AbortOnError(http.StatusInternalServerError, err, c))
+		r.log.Error(error_helper.SendError(http.StatusBadRequest, err, c))
 		return
 	}
 
 	resp := &model.Response{
 		Message:   "success register",
+		Status:    http.StatusText(http.StatusCreated),
 		Timestamp: time.Now().Format(time.RFC3339),
 	}
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusCreated, resp)
 }

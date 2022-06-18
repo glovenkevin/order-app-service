@@ -23,24 +23,14 @@ func NewAuthUseCase(log logger.LoggerInterface, userRepo domain.UserRepoInterfac
 	return &AuthUseCase{Log: log, UserRepo: userRepo, RoleRepo: roleRepo}
 }
 
-func (u *AuthUseCase) ValidateNewUser(ctx context.Context, req *model.RegisterRequest) error {
-	tracestr := "usecase.AuthUseCase.ValidateNewUser"
-
-	user, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
-	if err != nil {
-		u.Log.Errorf(tracestr+" - u.UserRepo.GetUserByEmail: %w", err)
-		return err
-	}
-
-	if user.ID.String() != "" {
-		return error_helper.ErrEmailAlreadyExists
-	}
-
-	return nil
-}
-
 func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 	tracestr := "usecase.AuthUseCase.Register"
+
+	err := u.ValidateNewUser(ctx, &model.RegisterRequest{Email: user.Email})
+	if err != nil {
+		u.Log.Errorf(tracestr+" - u.ValidateNewUser: %w", err)
+		return err
+	}
 
 	pwb := []byte(user.Password)
 	hpw, err := bcrypt.GenerateFromPassword(pwb, bcrypt.DefaultCost)
@@ -79,6 +69,22 @@ func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 		tx.Rollback()
 		u.Log.Errorf(tracestr+" - tx.Commit: %w", err)
 		return err
+	}
+
+	return nil
+}
+
+func (u *AuthUseCase) ValidateNewUser(ctx context.Context, req *model.RegisterRequest) error {
+	tracestr := "usecase.AuthUseCase.ValidateNewUser"
+
+	user, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		u.Log.Errorf(tracestr+" - u.UserRepo.GetUserByEmail: %w", err)
+		return err
+	}
+
+	if user.Email != "" {
+		return error_helper.ErrEmailAlreadyExists
 	}
 
 	return nil

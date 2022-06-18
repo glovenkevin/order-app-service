@@ -4,8 +4,8 @@ import "order-app/domain/entity"
 
 type (
 	LoginRequest struct {
-		Email    string `json:"email" example:"test@test.com" binding:"required,email"`
-		Password string `json:"password" example:"asdf" binding:"required"`
+		Email    string `json:"email" example:"test@test.com" binding:"required,email,max=30"`
+		Password string `json:"password" example:"asdf" binding:"required,max=20"`
 	}
 
 	LoginResponse struct {
@@ -14,10 +14,10 @@ type (
 	}
 
 	RegisterRequest struct {
-		Name        string `json:"name" example:"test" binding:"required,alphanum"`
-		Email       string `json:"email" example:"test@test.com" binding:"required,email"`
-		Password    string `json:"password" example:"asdf" binding:"required"`
-		PhoneNumber string `json:"phone_number" example:"08123456789" binding:"required,numeric"`
+		Name        string `json:"name" example:"test" binding:"required,max=50"`
+		Email       string `json:"email" example:"test@test.com" binding:"required,email,max=30"`
+		Password    string `json:"password" example:"asdf" binding:"required,max=20"`
+		PhoneNumber string `json:"phone_number" example:"08123456789" binding:"required,numeric,max=13"`
 		IsBlocked   bool   `json:"is_blocked" example:"false"`
 		FcmToken    string `json:"fcm_token" example:"asdf123" binding:"required"`
 	}
