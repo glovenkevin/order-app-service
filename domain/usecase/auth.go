@@ -19,12 +19,17 @@ type AuthUseCase struct {
 	RoleRepo domain.RoleRepoInterface
 }
 
-func NewAuthUseCase(log logger.LoggerInterface, userRepo domain.UserRepoInterface, roleRepo domain.RoleRepoInterface) *AuthUseCase {
+func NewAuthUseCase(log logger.LoggerInterface, userRepo domain.UserRepoInterface, roleRepo domain.RoleRepoInterface) Auther {
 	return &AuthUseCase{Log: log, UserRepo: userRepo, RoleRepo: roleRepo}
 }
 
 func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 	tracestr := "usecase.AuthUseCase.Register"
+	select {
+	case <-ctx.Done():
+		return error_helper.ContextError(ctx)
+	default:
+	}
 
 	err := u.ValidateNewUser(ctx, &model.RegisterRequest{Email: user.Email})
 	if err != nil {
@@ -76,6 +81,11 @@ func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 
 func (u *AuthUseCase) ValidateNewUser(ctx context.Context, req *model.RegisterRequest) error {
 	tracestr := "usecase.AuthUseCase.ValidateNewUser"
+	select {
+	case <-ctx.Done():
+		return error_helper.ContextError(ctx)
+	default:
+	}
 
 	user, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
 	if err != nil {

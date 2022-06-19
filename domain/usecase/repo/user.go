@@ -2,7 +2,9 @@ package repo
 
 import (
 	"context"
+	"order-app/domain"
 	"order-app/domain/entity"
+	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
 
 	"github.com/go-pg/pg/v10"
@@ -13,7 +15,7 @@ type UserRepo struct {
 	Log logger.LoggerInterface
 }
 
-func NewUserRepo(log logger.LoggerInterface, db *pg.DB) *UserRepo {
+func NewUserRepo(log logger.LoggerInterface, db *pg.DB) domain.UserRepoInterface {
 	return &UserRepo{Log: log, DB: db}
 }
 
@@ -27,6 +29,12 @@ func (r *UserRepo) InsertUser(tx *pg.Tx, user *entity.User) error {
 }
 
 func (r *UserRepo) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {
+	select {
+	case <-ctx.Done():
+		return nil, error_helper.ContextError(ctx)
+	default:
+	}
+
 	var user entity.User
 	err := r.ModelContext(ctx, &user).Where("email = ?", email).Select()
 	if pg.ErrNoRows == err {
