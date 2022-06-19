@@ -1,6 +1,7 @@
 package error
 
 import (
+	"context"
 	"net/http"
 	"order-app/domain/model"
 	"time"
@@ -32,4 +33,15 @@ func AbortOnError(code int, err error, g *gin.Context) string {
 
 func AbortAuthenticated(g *gin.Context) string {
 	return AbortOnError(http.StatusUnauthorized, ErrReqNotAuthenticated, g)
+}
+
+func ContextError(c context.Context) error {
+	switch c.Err() {
+	case context.Canceled:
+		return ErrRequestCanceled
+	case context.DeadlineExceeded:
+		return ErrDeadlineExceeded
+	default:
+		return nil
+	}
 }
