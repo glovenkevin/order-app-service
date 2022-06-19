@@ -15,4 +15,9 @@ type (
 		Register(ctx context.Context, user *entity.User) error
 		Login(ctx context.Context, req *model.LoginRequest) (*model.LoginResponse, error)
 	}
+
+	// Menu -.
+	Menuer interface {
+		GetMenues(ctx context.Context, req *model.MenuRequest) ([]*model.MenuResponse, error)
+	}
 )

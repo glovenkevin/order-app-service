@@ -22,7 +22,7 @@ import (
 // @contact.name   	Kevin Christian C.
 // @contact.email  	glovenkevincch@gmail.com
 // @host        	localhost:8080
-// @BasePath    	/api/v1
+// @BasePath    	/api
 func NewRouter(handler *gin.Engine, l logger.LoggerInterface, db *pg.DB) {
 	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
 	handler.GET("/swagger/*any", swaggerHandler)
@@ -37,5 +37,6 @@ func NewRouter(handler *gin.Engine, l logger.LoggerInterface, db *pg.DB) {
 	h := handler.Group("/api/v1")
 	{
 		newAuthRoutes(h, l, db)
+		newMenuRoutes(h, l, db)
 	}
 }
