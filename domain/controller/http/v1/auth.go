@@ -29,18 +29,17 @@ func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *pg.
 	h := handler.Group("/auth")
 	{
 		h.POST("/login", route.login)
-		h.POST("/register", route.register)
+		h.PUT("/register", route.register)
 	}
 }
 
 // @Summary     User login
 // @Description Authenticate user whether it is valid or not
-// @Tags  	    auth
+// @Tags  	    Authorization
 // @Accept      json
 // @Produce     json
 // @Param		req body model.LoginRequest true "Login request"
 // @Success     200 {object} model.Response
-// @Failure     500 {object} model.Response
 // @Router      /v1/auth/login [post]
 func (r *AuthRoutes) login(c *gin.Context) {
 	var req model.LoginRequest
@@ -67,13 +66,12 @@ func (r *AuthRoutes) login(c *gin.Context) {
 
 // @Summary     Register new user
 // @Description Registering new user
-// @Tags  	    auth
+// @Tags  	    Authorization
 // @Accept      json
 // @Produce     json
 // @Param		req body model.RegisterRequest true "Register request"
 // @Success     200 {object} model.Response
-// @Failure     500 {object} model.Response
-// @Router      /v1/auth/register [post]
+// @Router      /v1/auth/register [put]
 func (r *AuthRoutes) register(c *gin.Context) {
 	select {
 	case <-c.Done():
