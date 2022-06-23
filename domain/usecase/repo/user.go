@@ -2,29 +2,46 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"order-app/domain"
 	"order-app/domain/entity"
 	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
 
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
 )
 
 type UserRepo struct {
-	*pg.DB
+	*bun.DB
 	Log logger.LoggerInterface
 }
 
-func NewUserRepo(log logger.LoggerInterface, db *pg.DB) domain.UserRepoInterface {
+func NewUserRepo(log logger.LoggerInterface, db *bun.DB) domain.UserRepoInterface {
 	return &UserRepo{Log: log, DB: db}
 }
 
-func (u *UserRepo) Begin(ctx context.Context) (*pg.Tx, error) {
-	return u.DB.BeginContext(ctx)
+func (u *UserRepo) Begin(ctx context.Context) (*bun.Tx, error) {
+	select {
+	case <-ctx.Done():
+		return nil, error_helper.ContextError(ctx)
+	default:
+	}
+
+	tx, err := u.DB.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return &tx, nil
 }
 
-func (r *UserRepo) InsertUser(tx *pg.Tx, user *entity.User) error {
-	_, err := tx.Model(user).Insert()
+func (r *UserRepo) InsertUser(ctx context.Context, tx *bun.Tx, user *entity.User) error {
+	select {
+	case <-ctx.Done():
+		return error_helper.ContextError(ctx)
+	default:
+	}
+
+	_, err := tx.NewInsert().Model(user).Exec(ctx)
 	return err
 }
 
@@ -35,10 +52,15 @@ func (r *UserRepo) GetUserByEmail(ctx context.Context, email string) (*entity.Us
 	default:
 	}
 
-	var user entity.User
-	err := r.ModelContext(ctx, &user).Where("email = ?", email).Select()
-	if pg.ErrNoRows == err {
-		err = nil
+	user := new(entity.User)
+	err := r.NewSelect().Model(user).Where("email = ?", email).Scan(ctx)
+	if err == sql.ErrNoRows {
+		return nil, nil
 	}
-	return &user, err
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

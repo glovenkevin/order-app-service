@@ -8,15 +8,15 @@ import (
 	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
 
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
 )
 
 type MenuRepo struct {
-	*pg.DB
+	*bun.DB
 	Log logger.LoggerInterface
 }
 
-func NewMenuRepo(db *pg.DB, log logger.LoggerInterface) domain.MenuRepoInterface {
+func NewMenuRepo(db *bun.DB, log logger.LoggerInterface) domain.MenuRepoInterface {
 	return &MenuRepo{DB: db, Log: log}
 }
 
@@ -28,7 +28,7 @@ func (r *MenuRepo) Find(ctx context.Context, req *model.MenuRequest) ([]*entity.
 	}
 
 	var menus []*entity.Menu
-	q := r.DB.ModelContext(ctx, &menus)
+	q := r.DB.NewSelect().Model(&menus)
 
 	if req.Name != "" {
 		q = q.Where("name = ?", req.Name)
@@ -44,7 +44,7 @@ func (r *MenuRepo) Find(ctx context.Context, req *model.MenuRequest) ([]*entity.
 		q = q.Limit(int(req.Limit)).Offset(int(req.Offset))
 	}
 
-	err := q.Select()
+	err := q.Scan(ctx)
 	if err != nil {
 		r.Log.Errorf("Find menu failed: %v", err)
 		return nil, err

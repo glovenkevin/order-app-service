@@ -56,7 +56,7 @@ func runApp(cfg *config.Config) error {
 	}
 	defer l.Close()
 
-	db, err := initDatabase(&cfg.PG)
+	db, err := initDatabase(&cfg.PG, l)
 	if err != nil {
 		l.Fatal(fmt.Errorf("app - Run - postgres.New: %w", err))
 		return err
@@ -64,7 +64,7 @@ func runApp(cfg *config.Config) error {
 	defer db.Close()
 
 	// HTTP Server
-	handler := httpserver.NewServerHandler(&cfg.App)
+	handler := httpserver.NewServerHandler(&cfg.App, l)
 	v1.NewRouter(handler, l, db)
 
 	// Start the server and wait for the interrupt signal to gracefully shutdown the server with

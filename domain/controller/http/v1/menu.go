@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
 )
 
 type MenuRoutes struct {
@@ -18,7 +18,7 @@ type MenuRoutes struct {
 	uc  usecase.Menuer
 }
 
-func newMenuRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *pg.DB) {
+func newMenuRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *bun.DB) {
 	menuRepo := repo.NewMenuRepo(db, log)
 	uc := usecase.NewMenuUsecase(log, menuRepo)
 	route := MenuRoutes{log: log, uc: uc}

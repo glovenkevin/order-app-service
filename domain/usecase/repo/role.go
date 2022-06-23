@@ -2,20 +2,21 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"order-app/domain"
 	"order-app/domain/entity"
 	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
 
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
 )
 
 type RoleRepo struct {
-	*pg.DB
+	*bun.DB
 	Log logger.LoggerInterface
 }
 
-func NewRoleRepo(log logger.LoggerInterface, db *pg.DB) domain.RoleRepoInterface {
+func NewRoleRepo(log logger.LoggerInterface, db *bun.DB) domain.RoleRepoInterface {
 	return &RoleRepo{DB: db, Log: log}
 }
 
@@ -28,7 +29,11 @@ func (r *RoleRepo) GetRoleByCode(ctx context.Context, code string) (*entity.Role
 	}
 
 	role := &entity.Role{}
-	err := r.DB.ModelContext(ctx, role).Where("code = ?", code).Select()
+	err := r.DB.NewSelect().Model(role).Where("code = ?", code).Scan(ctx)
+	if err != nil && err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		r.Log.Errorf(tracert+" - r.DB.Model(role).Where(code = ?, code).Select: %w", err)
 		return nil, err

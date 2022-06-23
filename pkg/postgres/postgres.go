@@ -6,7 +6,8 @@ import (
 
 	"order-app/pkg/logger"
 
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
 )
 
 func New(host, port, user, password, database string, pool int, log logger.LoggerInterface) (*sql.DB, error) {
@@ -39,16 +40,15 @@ func New(host, port, user, password, database string, pool int, log logger.Logge
 	return db, nil
 }
 
-func NewORM(host, port, user, password, database string, pool int) (*pg.DB, error) {
-	db := pg.Connect(&pg.Options{
-		Addr:     fmt.Sprintf("%s:%s", host, port),
-		User:     user,
-		Password: password,
-		Database: database,
-		PoolSize: pool,
-	})
+func NewORM(host, port, user, password, database string, pool int, log logger.LoggerInterface) (*bun.DB, error) {
+	conn, err := New(host, port, user, password, database, pool, log)
+	if err != nil {
+		return nil, err
+	}
 
-	_, err := db.Exec("SELECT 1")
+	db := bun.NewDB(conn, pgdialect.New())
+
+	_, err = db.Exec("SELECT 1")
 	if err != nil {
 		return nil, err
 	}

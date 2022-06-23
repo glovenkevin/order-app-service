@@ -62,7 +62,7 @@ func (u *AuthUseCase) Register(ctx context.Context, user *entity.User) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
-	err = u.UserRepo.InsertUser(tx, user)
+	err = u.UserRepo.InsertUser(ctx, tx, user)
 	if err != nil {
 		tx.Rollback()
 		u.Log.Errorf(tracestr+" - u.UserRepo.RegisterUser: %w", err)
@@ -103,18 +103,22 @@ func (u *AuthUseCase) ValidateNewUser(ctx context.Context, req *model.RegisterRe
 func (u *AuthUseCase) Login(ctx context.Context, req *model.LoginRequest) (*model.LoginResponse, error) {
 	tracestr := "usecase.AuthUseCase.Login"
 
-	user, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
+	usr, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
+	if usr == nil {
+		u.Log.Warnf(tracestr+" - u.UserRepo.GetUserByEmail: User with email %w is not exist", req.Email)
+		return nil, error_helper.ErrUserNotFound
+	}
 	if err != nil {
 		u.Log.Errorf(tracestr+" - u.UserRepo.GetUserByEmail: %w", err)
 		return nil, err
 	}
 
-	if user.Email == "" {
+	if usr.Email == "" {
 		return nil, error_helper.ErrUserNotFound
 	}
 
 	pwb := []byte(req.Password)
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), pwb)
+	err = bcrypt.CompareHashAndPassword([]byte(usr.Password), pwb)
 	if err != nil {
 		u.Log.Errorf(tracestr+" - bcrypt.CompareHashAndPassword: %w", err)
 		return nil, error_helper.ErrPasswordIncorrect

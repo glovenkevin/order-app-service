@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
 )
 
 func initLogger(cfg *config.Log) (logger.LoggerInterface, error) {
@@ -22,8 +22,8 @@ func initLogger(cfg *config.Log) (logger.LoggerInterface, error) {
 	return log, nil
 }
 
-func initDatabase(cfg *config.PG) (*pg.DB, error) {
-	db, err := postgres.NewORM(cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.PoolMax)
+func initDatabase(cfg *config.PG, log logger.LoggerInterface) (*bun.DB, error) {
+	db, err := postgres.NewORM(cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.PoolMax, log)
 	if err != nil {
 		return nil, err
 	}

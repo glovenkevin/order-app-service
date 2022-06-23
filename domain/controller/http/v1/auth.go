@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-pg/pg/v10"
+	"github.com/uptrace/bun"
 )
 
 type AuthRoutes struct {
@@ -18,7 +18,7 @@ type AuthRoutes struct {
 	uc  usecase.Auther
 }
 
-func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *pg.DB) {
+func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *bun.DB) {
 	userRepo := repo.NewUserRepo(log, db)
 	roleRepo := repo.NewRoleRepo(log, db)
 

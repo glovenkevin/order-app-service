@@ -6,10 +6,10 @@ import (
 	"order-app/pkg/logger"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-pg/pg/v10"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/uptrace/bun"
 
 	_ "order-app/docs"
 )
@@ -21,9 +21,9 @@ import (
 // @version     	1.0
 // @contact.name   	Kevin Christian C.
 // @contact.email  	glovenkevincch@gmail.com
-// @host        	localhost:8080
+// @host        	localhost:8000
 // @BasePath    	/api
-func NewRouter(handler *gin.Engine, l logger.LoggerInterface, db *pg.DB) {
+func NewRouter(handler *gin.Engine, l logger.LoggerInterface, db *bun.DB) {
 	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
 	handler.GET("/swagger/*any", swaggerHandler)
 
