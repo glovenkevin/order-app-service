@@ -15,7 +15,7 @@ func SendError(code int, err error, g *gin.Context) string {
 		Status:    getStatusDesc(code),
 		Timestamp: time.Now().Format(time.RFC3339),
 	}
-	g.JSON(http.StatusInternalServerError, r)
+	g.JSON(code, r)
 
 	return err.Error()
 }

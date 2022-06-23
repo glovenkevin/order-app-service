@@ -66,7 +66,7 @@ func NewTestSuite() *TestSuite {
 		log.Fatalf("Config error: %s", err)
 	}
 
-	handler := httpserver.NewServerHandler(&cfg.App)
+	handler := httpserver.NewServerHandler(&cfg.App, l)
 	v1.NewRouter(handler, l, db)
 
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
