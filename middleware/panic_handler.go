@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"order-app/domain/model"
 	"order-app/pkg/logger"
-	"time"
+	"order-app/pkg/time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func PanicRecovery(l logger.LoggerInterface) gin.HandlerFunc {
 				resp := &model.Response{
 					Message:   fmt.Sprintf("[ERROR] Cause: %s", err.(error).Error()),
 					Status:    http.StatusText(http.StatusInternalServerError),
-					Timestamp: time.Now().Format(time.RFC3339),
+					Timestamp: time.GetNow(),
 				}
 				c.AbortWithStatusJSON(http.StatusInternalServerError, resp)
 				return

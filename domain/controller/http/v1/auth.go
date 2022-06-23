@@ -7,7 +7,7 @@ import (
 	"order-app/domain/usecase/repo"
 	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
-	"time"
+	"order-app/pkg/time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/uptrace/bun"
@@ -58,7 +58,7 @@ func (r *AuthRoutes) login(c *gin.Context) {
 	resp := &model.Response{
 		Message:   "success login",
 		Status:    http.StatusText(http.StatusOK),
-		Timestamp: time.Now().Format(time.RFC3339),
+		Timestamp: time.GetNow(),
 		Data:      res,
 	}
 	c.JSON(http.StatusOK, resp)
@@ -99,7 +99,7 @@ func (r *AuthRoutes) register(c *gin.Context) {
 	resp := &model.Response{
 		Message:   "success register",
 		Status:    http.StatusText(http.StatusCreated),
-		Timestamp: time.Now().Format(time.RFC3339),
+		Timestamp: time.GetNow(),
 	}
 	c.JSON(http.StatusCreated, resp)
 }

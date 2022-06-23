@@ -7,7 +7,7 @@ import (
 	"order-app/domain/usecase/repo"
 	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
-	"time"
+	"order-app/pkg/time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/uptrace/bun"
@@ -53,7 +53,7 @@ func (r *MenuRoutes) GetMenus(c *gin.Context) {
 	resp := &model.Response{
 		Message:   "Success get menues",
 		Status:    http.StatusText(http.StatusOK),
-		Timestamp: time.Now().Format(time.RFC3339),
+		Timestamp: time.GetNow(),
 		Data:      mm,
 	}
 	c.JSON(http.StatusOK, resp)
