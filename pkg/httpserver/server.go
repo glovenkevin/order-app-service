@@ -37,6 +37,7 @@ func NewServerHandler(cfg *config.App, l logger.LoggerInterface) *gin.Engine {
 
 	r := gin.New()
 	r.Use(middleware.PanicRecovery(l))
+	r.Use(middleware.Cors())
 	r.Use(gin.ErrorLogger())
 	r.Use(gin.Logger())
 
