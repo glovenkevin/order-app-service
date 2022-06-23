@@ -51,7 +51,7 @@ func (r *AuthRoutes) login(c *gin.Context) {
 	ctx := c.Request.Context()
 	res, err := r.uc.Login(ctx, &req)
 	if err != nil {
-		r.log.Error(error_helper.AbortOnError(http.StatusUnauthorized, err, c))
+		r.log.Error(error_helper.SendError(http.StatusUnauthorized, err, c))
 		return
 	}
 

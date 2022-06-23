@@ -87,14 +87,13 @@ func (u *AuthUseCase) ValidateNewUser(ctx context.Context, req *model.RegisterRe
 	default:
 	}
 
-	user, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
+	usr, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
+	if usr != nil {
+		return error_helper.ErrEmailAlreadyExists
+	}
 	if err != nil {
 		u.Log.Errorf(tracestr+" - u.UserRepo.GetUserByEmail: %w", err)
 		return err
-	}
-
-	if user.Email != "" {
-		return error_helper.ErrEmailAlreadyExists
 	}
 
 	return nil
