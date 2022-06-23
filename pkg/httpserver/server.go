@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"order-app/config"
+	"order-app/middleware"
+	"order-app/pkg/logger"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +25,7 @@ type Server struct {
 	shutdownTimeout time.Duration
 }
 
-func NewServerHandler(cfg *config.App) *gin.Engine {
+func NewServerHandler(cfg *config.App, l logger.LoggerInterface) *gin.Engine {
 	switch cfg.GinMode {
 	case "debug":
 		gin.SetMode(gin.DebugMode)
@@ -34,7 +36,7 @@ func NewServerHandler(cfg *config.App) *gin.Engine {
 	}
 
 	r := gin.New()
-	r.Use(gin.Recovery())
+	r.Use(middleware.PanicRecovery(l))
 	r.Use(gin.ErrorLogger())
 	r.Use(gin.Logger())
 
