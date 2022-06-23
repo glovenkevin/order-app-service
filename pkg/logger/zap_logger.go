@@ -2,6 +2,7 @@ package logger
 
 import (
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"order-app/config"
 )
@@ -13,6 +14,7 @@ type ZapLogger struct {
 func NewZapLogger(cfg *config.Log) (*ZapLogger, error) {
 	lc := zap.NewDevelopmentConfig()
 	lc.Encoding = "console"
+	lc.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
 
 	if cfg.Env == "test" {
 		lc = zap.NewProductionConfig()
