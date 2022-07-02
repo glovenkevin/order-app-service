@@ -46,7 +46,7 @@ func (r *MenuRoutes) GetMenus(c *gin.Context) {
 	ctx := c.Request.Context()
 	mm, err := r.uc.GetMenues(ctx, req)
 	if err != nil {
-		r.log.Error(error_helper.AbortOnError(http.StatusInternalServerError, err, c))
+		r.log.Error(error_helper.SendError(http.StatusInternalServerError, err, c))
 		return
 	}
 
