@@ -124,7 +124,7 @@ func (u *AuthUseCase) Login(ctx context.Context, req *model.LoginRequest) (*mode
 	}
 
 	return &model.LoginResponse{
-		Token:   "",
+		Token:   usr.ID.String(),
 		Message: "User logged in successfully",
 	}, nil
 }
