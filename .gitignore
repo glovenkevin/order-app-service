@@ -6,6 +6,7 @@
 .env
 config.yml
 config.test.yml
+service-account.json
 go.sum
 go.mod
 docs

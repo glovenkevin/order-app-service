@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"order-app/config"
@@ -11,7 +12,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	firebase "firebase.google.com/go/v4"
 	"github.com/uptrace/bun"
+	"google.golang.org/api/option"
 )
 
 func initLogger(cfg *config.Log) (logger.LoggerInterface, error) {
@@ -36,6 +39,16 @@ func initDatabaseMigration(cfg *config.PG, log logger.LoggerInterface) (*sql.DB,
 		return nil, err
 	}
 	return db, nil
+}
+
+func initFirebase(ctx context.Context, cfg *config.Firebase) (*firebase.App, error) {
+	opt := option.WithCredentialsFile(cfg.JsonConfigFile)
+	app, err := firebase.NewApp(ctx, nil, opt)
+	if err != nil {
+		return nil, err
+	}
+
+	return app, nil
 }
 
 func catchSignal(httpServer *httpserver.Server, log logger.LoggerInterface) {

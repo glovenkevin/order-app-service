@@ -63,6 +63,15 @@ func runApp(cfg *config.Config) error {
 	}
 	defer db.Close()
 
+	ctx := context.Background()
+	app, err := initFirebase(ctx, &cfg.Firebase)
+	if err != nil {
+		l.Fatal(fmt.Errorf("app - Run - firebase: %w", err))
+		return err
+	}
+	id, _ := app.InstanceID(ctx)
+	l.Infof("Firebase Instance ID: %v", id)
+
 	// HTTP Server
 	handler := httpserver.NewServerHandler(&cfg.App, l)
 	v1.NewRouter(handler, l, db)

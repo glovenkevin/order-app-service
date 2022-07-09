@@ -9,10 +9,11 @@ import (
 type (
 	// Config -.
 	Config struct {
-		App  `yaml:"app"`
-		HTTP `yaml:"http"`
-		Log  `yaml:"logger"`
-		PG   `yaml:"postgres"`
+		App      `yaml:"app"`
+		HTTP     `yaml:"http"`
+		Log      `yaml:"logger"`
+		PG       `yaml:"postgres"`
+		Firebase `yaml:"firebase"`
 	}
 
 	// App -.
@@ -36,11 +37,16 @@ type (
 	// PG -.
 	PG struct {
 		PoolMax  int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
-		Host     string `env-required:"true"                 env:"PG_HOST"`
+		Host     string `env-required:"true" yaml:"host" env:"PG_HOST"`
 		Port     string `env-required:"true" yaml:"port" env:"PG_PORT"`
 		User     string `env-required:"true" yaml:"user" env:"PG_USER"`
 		Password string `env-required:"true" yaml:"password" env:"PG_PASSWORD"`
 		DBName   string `env-required:"true" yaml:"db_name" env:"PG_DB_NAME"`
+	}
+
+	// Firebase -.
+	Firebase struct {
+		JsonConfigFile string `env-required:"true" yaml:"json-config-file"`
 	}
 )
 
