@@ -17,3 +17,6 @@ postgres:
   user: developer
   password: developer
   db_name: order_app
+
+firebase:
+  json-config-file: service-account.json
