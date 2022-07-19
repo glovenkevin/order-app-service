@@ -32,6 +32,10 @@ func New(host, port, user, password, database string, pool int, log logger.Logge
 		return nil, err
 	}
 
+	if pool != 0 {
+		db.SetMaxOpenConns(pool)
+	}
+
 	_, err = db.Exec("SELECT 1")
 	if err != nil {
 		return nil, err
