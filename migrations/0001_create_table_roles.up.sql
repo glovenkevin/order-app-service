@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS roles (
 
 INSERT INTO roles (id, code, name, created_at, updated_at) 
 VALUES 
-(uuid_generate_v4(), 'ADM', 'Administrator', now(), now()),
-(uuid_generate_v4(), 'USR', 'Users', now(), now());
+('b9e5009a-326b-4d18-a9c1-825dc3234336', 'ADM', 'Administrator', now(), now()),
+('3e93750c-6040-4a19-b382-9cc48215522f', 'USR', 'Users', now(), now());

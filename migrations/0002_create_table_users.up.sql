@@ -15,4 +15,4 @@ CREATE TABLE IF NOT EXISTS users (
 
 INSERT INTO users (id, role_id, name, email, password, phone_number, fcm_token, is_blocked, created_at, updated_at)
 VALUES 
-(uuid_generate_v4(), (SELECT id FROM roles WHERE code = 'ADM'), 'Administrator', 'admin@admin.com', '', '08561234', '', false, now(), now());
+('a30ff022-3cb6-482d-a8b5-285c09492b2d', 'b9e5009a-326b-4d18-a9c1-825dc3234336', 'Administrator', 'admin@admin.com', '', '08561234', '', false, now(), now());
