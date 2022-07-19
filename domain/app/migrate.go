@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"database/sql"
 	"errors"
 	"order-app/pkg/logger"
@@ -20,7 +19,7 @@ const (
 	_defaultTimeout  = time.Second
 )
 
-func execMigration(ctx context.Context, db *sql.DB, log logger.LoggerInterface) error {
+func execMigration(db *sql.DB, log logger.LoggerInterface) error {
 	var (
 		attempts = _defaultAttempts
 		err      error
@@ -60,7 +59,7 @@ func execMigration(ctx context.Context, db *sql.DB, log logger.LoggerInterface) 
 	return nil
 }
 
-func execMigrationDown(ctx context.Context, db *sql.DB, log logger.LoggerInterface) error {
+func execMigrationDown(db *sql.DB, log logger.LoggerInterface) error {
 	var (
 		attempts = _defaultAttempts
 		err      error

@@ -98,12 +98,10 @@ func runMigrate(cfg *config.Config, flag string) error {
 		return err
 	}
 
-	// Migrate
-	ctx := context.Background()
 	if flag == "up" {
-		err = execMigration(ctx, db, l)
+		err = execMigration(db, l)
 	} else {
-		err = execMigrationDown(ctx, db, l)
+		err = execMigrationDown(db, l)
 	}
 	return err
 }
