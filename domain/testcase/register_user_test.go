@@ -13,6 +13,7 @@ import (
 func (t *RegisterUserTestCase) GetScenarios() []*RegisterUserTestCase {
 	return []*RegisterUserTestCase{
 		t.DefaultParam(),
+		t.UserAlreadyExist(),
 	}
 }
 
