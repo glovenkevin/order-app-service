@@ -25,7 +25,7 @@ func newBannerRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *b
 
 	h := handler.Group("/banners")
 	{
-		h.GET("/", route.getBanners)
+		h.GET("/", route.GetBanners)
 	}
 }
 
@@ -35,7 +35,7 @@ func newBannerRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *b
 // @Produce     json
 // @Success     200 {object} model.Response
 // @Router      /v1/banners [get]
-func (r *BannerRoutes) getBanners(c *gin.Context) {
+func (r *BannerRoutes) GetBanners(c *gin.Context) {
 	select {
 	case <-c.Done():
 		if c.Err() != nil {
