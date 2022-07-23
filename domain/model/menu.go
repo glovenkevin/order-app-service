@@ -29,7 +29,7 @@ type (
 func (r *MenuRequest) ToEntity() *entity.Menu {
 	e := entity.Menu{
 		Name:        r.Name,
-		Description: r.Description,
+		Description: &r.Description,
 		Price:       r.Price,
 	}
 	if r.ID != "" {

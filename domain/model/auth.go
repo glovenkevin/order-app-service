@@ -28,8 +28,8 @@ func (r *RegisterRequest) ToEntity() *entity.User {
 		Name:        r.Name,
 		Email:       r.Email,
 		Password:    r.Password,
-		PhoneNumber: r.PhoneNumber,
-		FcmToken:    r.FcmToken,
+		PhoneNumber: &r.PhoneNumber,
+		FcmToken:    &r.FcmToken,
 		IsBlocked:   r.IsBlocked,
 	}
 }

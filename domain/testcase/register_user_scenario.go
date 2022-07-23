@@ -3,6 +3,7 @@ package testcase
 import (
 	"order-app/domain/entity"
 	error_helper "order-app/pkg/error"
+	"order-app/pkg/variable"
 )
 
 type RegisterUserTestCase struct {
@@ -20,8 +21,8 @@ func (t *RegisterUserTestCase) DefaultParam() *RegisterUserTestCase {
 		Name:        "Kevin",
 		Email:       "kevin@kevin.com",
 		Password:    "test123",
-		FcmToken:    "asdfasdf",
-		PhoneNumber: "123123",
+		FcmToken:    variable.NewString("asdfasdf"),
+		PhoneNumber: variable.NewString("12123123"),
 		IsBlocked:   false,
 	}
 

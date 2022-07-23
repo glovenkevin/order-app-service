@@ -6,6 +6,7 @@ import (
 	"order-app/domain/model"
 	error_helper "order-app/pkg/error"
 	"order-app/pkg/logger"
+	"order-app/pkg/variable"
 )
 
 type MenuUseCase struct {
@@ -37,7 +38,7 @@ func (u *MenuUseCase) GetMenues(ctx context.Context, req *model.MenuRequest) ([]
 			ID:          m.ID.String(),
 			Name:        m.Name,
 			Price:       m.Price,
-			Description: m.Description,
+			Description: variable.GetString(m.Description),
 			ImageUrl:    m.ImageUrl,
 			Stock:       m.Stock,
 		}

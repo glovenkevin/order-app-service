@@ -1,10 +1,10 @@
-CREATE TABLE menues (
+CREATE TABLE IF NOT EXISTS menues (
     id uuid NOT NULL,
     name character varying NOT NULL,
     description character varying,
     price numeric NOT NULL,
     stock integer NOT NULL,
-    image_url character varying,
+    image_url character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     PRIMARY KEY (id)

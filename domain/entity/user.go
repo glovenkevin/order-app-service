@@ -15,8 +15,8 @@ type User struct {
 	Name        string    `bun:"name"`
 	Email       string    `bun:"email"`
 	Password    string    `bun:"password"`
-	PhoneNumber string    `bun:"phone_number"`
-	FcmToken    string    `bun:"fcm_token"`
+	PhoneNumber *string   `bun:"phone_number"`
+	FcmToken    *string   `bun:"fcm_token"`
 	IsBlocked   bool      `bun:"is_blocked"`
 	CreatedAt   time.Time `bun:"created_at"`
 	UpdatedAt   time.Time `bun:"updated_at"`

@@ -13,7 +13,7 @@ type Menu struct {
 	ID          uuid.UUID `bun:"id"`
 	Name        string    `bun:"name"`
 	Stock       int32     `bun:"stock"`
-	Description string    `bun:"description"`
+	Description *string   `bun:"description"`
 	Price       float64   `bun:"price"`
 	ImageUrl    string    `bun:"image_url"`
 	CreatedAt   time.Time `bun:"created_at"`
