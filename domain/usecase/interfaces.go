@@ -20,4 +20,10 @@ type (
 	Menuer interface {
 		GetMenues(ctx context.Context, req *model.MenuRequest) ([]*model.MenuResponse, error)
 	}
+
+	// Banners -.
+
+	Banner interface {
+		GetBanners(ctx context.Context) ([]*model.BannerResponse, error)
+	}
 )

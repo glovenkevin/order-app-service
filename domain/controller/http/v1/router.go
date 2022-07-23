@@ -38,5 +38,6 @@ func NewRouter(handler *gin.Engine, l logger.LoggerInterface, db *bun.DB) {
 	{
 		newAuthRoutes(h, l, db)
 		newMenuRoutes(h, l, db)
+		newBannerRoutes(h, l, db)
 	}
 }
