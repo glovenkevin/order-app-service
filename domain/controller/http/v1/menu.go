@@ -37,6 +37,16 @@ func newMenuRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *bun
 // @Success     200 {object} model.MenuResponse
 // @Router      /v1/menu [get]
 func (r *MenuRoutes) GetMenus(c *gin.Context) {
+	select {
+	case <-c.Done():
+		if c.Err() != nil {
+			r.log.Errorf("c.Done(): %v", c.Err())
+			error_helper.AbortOnError(http.StatusInternalServerError, c.Err(), c)
+		}
+		return
+	default:
+	}
+
 	req := new(model.MenuRequest)
 	if err := c.ShouldBind(req); err != nil {
 		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))

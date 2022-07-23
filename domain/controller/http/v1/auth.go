@@ -42,6 +42,16 @@ func newAuthRoutes(handler *gin.RouterGroup, log logger.LoggerInterface, db *bun
 // @Success     200 {object} model.Response
 // @Router      /v1/auth/login [post]
 func (r *AuthRoutes) login(c *gin.Context) {
+	select {
+	case <-c.Done():
+		if c.Err() != nil {
+			r.log.Errorf("c.Done(): %v", c.Err())
+			error_helper.AbortOnError(http.StatusInternalServerError, c.Err(), c)
+		}
+		return
+	default:
+	}
+
 	var req model.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		r.log.Error(error_helper.AbortOnError(http.StatusBadRequest, err, c))
